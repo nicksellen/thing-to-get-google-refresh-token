@@ -1,0 +1,14 @@
+{
+  "name": "thing-to-get-google-refresh-token",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Oh, it's so small, do I really need to test it?\" && exit 1"
+  },
+  "author": "Nick Sellen <git@nicksellen.co.uk>",
+  "license": "MIT",
+  "dependencies": {
+    "google-auth-library": "^0.9.6"
+  }
+}
