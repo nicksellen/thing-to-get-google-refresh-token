@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Oh, it's so small, do I really need to test it?\" && exit 1"
   },
+  "bin": "./index.js",
   "author": "Nick Sellen <git@nicksellen.co.uk>",
   "license": "MIT",
   "dependencies": {
