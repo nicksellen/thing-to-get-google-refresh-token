@@ -6,10 +6,11 @@ var parseUrl = require('url').parse;
 
 var clientSecretFilename = process.argv[2];
 
-if (!clientSecretFilename) {
-  console.log('pass path to client secret json file as first argument');
-  process.exit(1);
-}
+// TODO: make these configurable
+var SCOPES = [
+  'https://spreadsheets.google.com/feeds',
+  'https://www.googleapis.com/auth/drive.metadata.readonly'
+];
 
 var google = {
   auth: {
@@ -17,8 +18,10 @@ var google = {
   }
 };
 
-if (!fs.existsSync(clientSecretFilename)) {
-  console.log('goto https://console.developers.google.com/project and download a client_secret.json file for your project');
+if (!clientSecretFilename || !fs.existsSync(clientSecretFilename)) {
+  console.log('goto https://console.developers.google.com/project and download a ' +
+              'client_secret json file for your project and pass the path to it ' + 
+              'as the first argument');
   process.exit(0);
 }
 
@@ -31,20 +34,17 @@ var REDIRECT_URL = CREDENTIALS.web.redirect_uris.filter(function(uri){
 })[0];
 
 if (!REDIRECT_URL) {
-  console.log('could not find a localhost redirect url', CREDENTIALS.web.redirect_uris);
+  console.log('could not find a localhost redirect url', CREDENTIALS.web.redirect_uris, 
+              'please go to https://console.developers.google.com/project and add one. Any ' +
+              'port will do, e.g. http://localhost:5000');
   process.exit(1);
 }
 
 var oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URL);
 
-var scopes = [
-  'https://spreadsheets.google.com/feeds',
-  'https://www.googleapis.com/auth/drive.metadata.readonly'
-];
-
 var url = oauth2Client.generateAuthUrl({
   access_type: 'offline',
-  scope: scopes,
+  scope: SCOPES,
   approval_prompt: 'force'
 });
 
