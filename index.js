@@ -1,6 +1,15 @@
+#!/usr/bin/env node
+
 var fs = require('fs');
 var http = require('http');
 var parseUrl = require('url').parse;
+
+var clientSecretFilename = process.argv[2];
+
+if (!clientSecretFilename) {
+  console.log('pass path to client secret json file as first argument');
+  process.exit(1);
+}
 
 var google = {
   auth: {
@@ -8,12 +17,12 @@ var google = {
   }
 };
 
-if (!fs.existsSync('./client_secret.json')) {
+if (!fs.existsSync(clientSecretFilename)) {
   console.log('goto https://console.developers.google.com/project and download a client_secret.json file for your project');
   process.exit(0);
 }
 
-var CREDENTIALS = JSON.parse(fs.readFileSync('./client_secret.json', 'utf8'));
+var CREDENTIALS = JSON.parse(fs.readFileSync(clientSecretFilename, 'utf8'));
 
 var CLIENT_ID = CREDENTIALS.web.client_id;
 var CLIENT_SECRET = CREDENTIALS.web.client_secret;
@@ -67,8 +76,7 @@ function startServer(port) {
 
     oauth2Client.getToken(code, function(err, tokens) {
       if (err) return sendError(res, err);
-      fs.writeFileSync('./tokens.json', JSON.stringify(tokens, null, 2));
-      send(res, 'tokens were saved :)');
+      send(res, JSON.stringify(tokens, null, 2));
     });
 
   })
